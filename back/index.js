@@ -12,6 +12,14 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 
+const userRoutes = require("./routes/user");
+const publicationRoutes = require("./routes/publications");
+const followRoutes = require("./routes/follow");
+
+app.use("/api",userRoutes);
+app.use("/api",publicationRoutes);
+app.use("/api",followRoutes);
+
 
 //test
 app.get("/ruta", (req,res)=>{
