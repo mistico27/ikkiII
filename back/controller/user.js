@@ -57,9 +57,44 @@ const pruebaUser =(req,res)=>{
 }
 };
 
+const login= async (req,res)=>{
+    //obtain data req.body
+    const {email,password} =req.body;
+    if(!req.body.email || !req.body.password){
+        return res.status(404).send({
+            message:"data is missing to send",
+            status:"error"
+        });
+    }
+    //check if user exists
+    const userFound =await User.findOne({email});
+    if(!userFound){
+        return res.status(400).json(
+        ['user was not found try again']
+        )
+    }
+    //check password
+    const isMatching =await bcrypt.compare(password,userFound.password);
+    if(!isMatching){
+        return res.status(400).json(["Incorrect Password"],);
+    }
+    //token
+    const token=false;
+    //data user
+    return res.status(200).send({
+        status:"correct",
+        message:"accion de login correct",
+        User:{
+            id:userFound._id,
+            name:userFound.name,
+            nick:userFound.nick
+        },token
+    })
+}
+
 
 
 ///export actions
 module.exports={
-    pruebaUser,register
+    pruebaUser,register,login
 }
