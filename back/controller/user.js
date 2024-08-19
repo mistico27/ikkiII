@@ -5,7 +5,8 @@ const jwt =require("../services/jwt");
 //test actions
 const pruebaUser =(req,res)=>{
     return res.status(200).send({
-        message:"mensaje de prueba enviado desde: controller/user.js"
+        message:"mensaje de prueba enviado desde: controller/user.js",
+        tsts:req.User
     });
 }
 

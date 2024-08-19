@@ -21,5 +21,5 @@ const createToken = (User)=>{
 
 
 module.exports={
-    createToken
+    createToken,secret
 }
