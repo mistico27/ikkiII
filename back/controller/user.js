@@ -1,6 +1,7 @@
 const User = require("../models/user");
 const bcrypt = require("bcrypt");
-
+///services
+const jwt =require("../services/jwt");
 //test actions
 const pruebaUser =(req,res)=>{
     return res.status(200).send({
@@ -79,7 +80,7 @@ const login= async (req,res)=>{
         return res.status(400).json(["Incorrect Password"],);
     }
     //token
-    const token=false;
+    const token=jwt.createToken(userFound);
     //data user
     return res.status(200).send({
         status:"correct",
