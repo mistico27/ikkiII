@@ -16,10 +16,9 @@ const userRoutes = require("./routes/user");
 const publicationRoutes = require("./routes/publications");
 const followRoutes = require("./routes/follow");
 
-app.use("/api",userRoutes);
-app.use("/api",publicationRoutes);
-app.use("/api",followRoutes);
-
+app.use("/api/user",userRoutes);
+app.use("/api/publication",publicationRoutes);
+app.use("/api/follow",followRoutes);
 
 //test
 app.get("/ruta", (req,res)=>{
