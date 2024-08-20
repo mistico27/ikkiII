@@ -1,12 +1,13 @@
 const User = require("../models/user");
 const bcrypt = require("bcrypt");
+const mongoosePagination = require("mongoose-pagination");
+
 ///services
 const jwt =require("../services/jwt");
 //test actions
 const pruebaUser =(req,res)=>{
     return res.status(200).send({
-        message:"mensaje de prueba enviado desde: controller/user.js",
-        tsts:req.User
+        message:"mensaje de prueba enviado desde: controller/user.js"
     });
 }
 
@@ -94,9 +95,47 @@ const login= async (req,res)=>{
     })
 }
 
+const profile = async(req,res)=>{
+    //recibir parametro
+    try{
+    const id= req.params.id;
+    //consulta de usuario
+    const userfind = await User.findById(id);
+    if(!userfind){
+        return res.status(404).send({
+            message:"User does not exists please check your data",
+            status:"error"
+        });
+    }
+    ///return of result
+    return res.status(200).send({
+        status:"success",
+        message:"User does exists",
+        User:userfind
+    });
+}catch(ex){
+    res.status(500).send({message:"system error contact it support", status:ex.message});
+}
+}
 
+const list =(req,res)=>{
+    ///control page
+    let page=1;
+    if(req.params.page){
+        page = req.params.page;
+    }
+    page=parseInt(page);        
+    ///mongoose pagination
+    User.find().sort('_id');
+    //return res
+    return res.status(200).send({
+        status:"success",
+        message:"listado de usuarios",
+        page,
+    });
+}
 
 ///export actions
 module.exports={
-    pruebaUser,register,login
+    pruebaUser,register,login,profile,list
 }
