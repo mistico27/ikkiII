@@ -135,7 +135,31 @@ const list =(req,res)=>{
     });
 }
 
+const update=async(req,res)=>{
+    if(req.body.password!=null){
+        const passwordHash =await bcrypt.hash(req.body.password,10);
+        req.body.password=passwordHash;
+    }
+    try{
+        const myUserProfile =await User.findByIdAndUpdate(req.params.id,req.body,{new:true});
+        if(!myUserProfile){
+            return res.status(404).send({message:"profile not found"});
+        }
+        return res.status(200).send({
+            status:"success",
+            message:"User updated successfully",
+            myUserProfile
+        });
+    
+        }catch(error){
+          return  res.status(404).json({message:"task could not be found"});
+        }
+}
+
+
+
+
 ///export actions
 module.exports={
-    pruebaUser,register,login,profile,list
+    pruebaUser,register,login,profile,list,update
 }
