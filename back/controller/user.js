@@ -1,7 +1,7 @@
 const User = require("../models/user");
 const bcrypt = require("bcrypt");
 const mongoosePagination = require("mongoose-pagination");
-
+const fs = require("fs"); 
 ///services
 const jwt =require("../services/jwt");
 //test actions
@@ -156,16 +156,46 @@ const update=async(req,res)=>{
         }
 }
 
-const upload=(req,res)=>{
+const upload= async(req,res)=>{
 
-
+    ///Obtener el fichero de imagen
+    if(!req.file){
+        return res.status(404).send({
+            status:"error",
+            message:"Peticion no incluye imagen"
+        });
+    }
+    ///nombre del archivo
+    let image = req.file.originalname;
+    ///obtener la extension
+    let imageSplit = image.split("\.");
+    let extension = imageSplit[1];
+    //comprobar extension
+    if(extension !="png" && extension!="jpg" && extension!="jpeg" && extension!= "gif"){
+        //Borrar archivo
+        const filePath = req.file.path;
+        const fileDeleted = fs.unlinkSync(filePath);
+        return res.status(400).send({
+            status:"error",
+            message:"Extension del fichero invalido"
+        })
+    }
+    ///guardar en DB
+    let usertoupdate = await User.findOneAndUpdate(req.params.id,{image:req.file.filename},{new:true});
+    
+    if(!usertoupdate){
+        return res.status(500).send({
+            status:"error",
+            message:"User not found please try with another User"
+        })
+    }
 
 
     return res.status(200).send({
         status:"success",
-        message:"uploads of images",
-        files: req.files
-       
+        user:usertoupdate,
+        file:req.file,
+        image:image
     });
 }
 
