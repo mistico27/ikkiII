@@ -35,7 +35,32 @@ const save=async(req,res)=>{
     }
 }
 
+const UnFollowed =async(req,res)=>{
+    try{
+    ///pick up the id of the identify user
+    const userId = req.user.id;
+    ///Pick  the id that i want to stop follow
+    const followeId =req.params.id;
+    //find coincidences and remove
+    let userttofind= await follow.find({
+        "user":userId,
+        "followed":followeId
+    })
+
+    let deleteFollowed = await follow.deleteOne({followeId:userttofind.followed});
+
+        return res.status(200).send({
+            message:" Follow eliminado correctamente",
+            status:"correct",
+            deleteFollowed
+        });
+    }catch(ex){
+        res.status(500).send({message:"system error contact it support", status:ex.message});
+    }    
+}
+
+
 ///export actions
 module.exports={
-    pruebaFollow,save
+    pruebaFollow,save,UnFollowed
 }
