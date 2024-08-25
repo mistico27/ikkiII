@@ -182,7 +182,7 @@ const upload= async(req,res)=>{
         })
     }
     ///guardar en DB
-    let usertoupdate = await User.findOneAndUpdate(req.params.id,{image:req.file.filename},{new:true});
+    let usertoupdate = await User.findOneAndUpdate({_id:req.params.id},{image:req.file.filename},{new:true});
     
     if(!usertoupdate){
         return res.status(500).send({
