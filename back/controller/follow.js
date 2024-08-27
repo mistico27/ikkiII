@@ -46,6 +46,9 @@ const UnFollowed =async(req,res)=>{
         "user":userId,
         "followed":followeId
     })
+    if(!userttofind){
+        return res.status(500).json(["user could not be founded"],);
+    }
 
     let deleteFollowed = await follow.deleteOne({followeId:userttofind.followed});
 
@@ -59,8 +62,34 @@ const UnFollowed =async(req,res)=>{
     }    
 }
 
+///listado de usuarios que estoy haciendo follow
+const following =async(req,res)=>{
+    let userId =req.user.id;
+    if(req.params.id){
+        userId=req.params.id;
+    }
+    let myFollows = await follow.find({user:userId}).populate("user followed", "-password -role -__v")
+    let total=myFollows.length;
+    return res.status(200).send({
+        message:" Following method created correctamente",
+        status:"correct",
+        myFollows,
+        total
+    });
+}
+
+///listado de usuarios que me estan siguiendo
+const followers =(req,res)=>{
+
+    return res.status(200).send({
+        message:" Followed method que me siguen",
+        status:"correct"
+    });
+}
+
+
 
 ///export actions
 module.exports={
-    pruebaFollow,save,UnFollowed
+    pruebaFollow,save,UnFollowed,followers,following
 }
