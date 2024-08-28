@@ -1,5 +1,8 @@
 const follow =require("../models/follow");
 const user = require("../models/user");
+///servicio
+const followService = require("../services/followUserIds");
+
 
 const pruebaFollow =(req,res)=>{
     return res.status(200).send({
@@ -64,18 +67,28 @@ const UnFollowed =async(req,res)=>{
 
 ///listado de usuarios que estoy haciendo follow
 const following =async(req,res)=>{
+    try{
     let userId =req.user.id;
     if(req.params.id){
         userId=req.params.id;
     }
     let myFollows = await follow.find({user:userId}).populate("user followed", "-password -role -__v")
     let total=myFollows.length;
+ 
+    let followUSerIds = await followService.followUserIds(req.user.id);
+
+
     return res.status(200).send({
         message:" Following method created correctamente",
         status:"correct",
         myFollows,
-        total
+        total,
+        userFollowing:followUSerIds.following,
+        userFollowingMe:followUSerIds.followers
     });
+   }catch(ex){
+    res.status(500).send({message:"system error contact it support", status:ex.message});
+   }
 }
 
 ///listado de usuarios que me estan siguiendo

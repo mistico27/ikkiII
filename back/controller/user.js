@@ -5,6 +5,7 @@ const fs = require("fs");
 const path =require("path");
 ///services
 const jwt =require("../services/jwt");
+const followServices = require("../services/followUserIds");
 //test actions
 const pruebaUser =(req,res)=>{
     return res.status(200).send({
@@ -102,6 +103,9 @@ const profile = async(req,res)=>{
     const id= req.params.id;
     //consulta de usuario
     const userfind = await User.findById(id);
+    //seguimiento
+    const followingInfo = await followServices.followThisUser(req.user.id, id);    
+
     if(!userfind){
         return res.status(404).send({
             message:"User does not exists please check your data",
@@ -112,7 +116,9 @@ const profile = async(req,res)=>{
     return res.status(200).send({
         status:"success",
         message:"User does exists",
-        User:userfind
+        User:userfind,
+        following:followingInfo.following,
+        followers:followingInfo.follower
     });
 }catch(ex){
     res.status(500).send({message:"system error contact it support", status:ex.message});
